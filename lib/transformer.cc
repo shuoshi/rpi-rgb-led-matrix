@@ -221,7 +221,76 @@ Canvas *LargeSquare64x64Transformer::Transform(Canvas *output) {
   assert(output != NULL);
 
   canvas_->SetDelegatee(output);
-  return canvas_;
+    return canvas_;
 }
+    
+    
+/***********************************/
+/* Transformer 128 x 64 Canvas */
+/***********************************/
+class Transformer128x64::TransformCanvas : public Canvas {
+    public:
+        TransformCanvas() : delegatee_(NULL) {}
+        
+        void SetDelegatee(Canvas* delegatee);
+        
+        virtual void Clear();
+        virtual void Fill(uint8_t red, uint8_t green, uint8_t blue);
+        virtual int width() const;
+        virtual int height() const;
+        virtual void SetPixel(int x, int y, uint8_t red, uint8_t green, uint8_t blue);
+        
+    private:
+        Canvas *delegatee_;
+    };
+    
+    void Transformer128x64::TransformCanvas::SetDelegatee(Canvas* delegatee) {
+        // Our assumptions of the underlying geometry:
+        assert(delegatee->height() == 32);
+        assert(delegatee->width() == 256);
+        
+        delegatee_ = delegatee;
+    }
+    
+    void Transformer128x64::TransformCanvas::Clear() {
+        delegatee_->Clear();
+    }
+    
+    void Transformer128x64::TransformCanvas::Fill(uint8_t red, uint8_t green, uint8_t blue) {
+        delegatee_->Fill(red, green, blue);
+    }
+    
+    int Transformer128x64::TransformCanvas::width() const {
+        return 128;
+    }
+    
+    int Transformer128x64::TransformCanvas::height() const {
+        return 64;
+    }
+
+    void Transformer128x64::TransformCanvas::SetPixel(int x, int y, uint8_t red, uint8_t green, uint8_t blue) {
+        if (x < 0 || x >= width() || y < 0 || y >= height()) return;
+        // We have up to column 64 one direction, then folding around. Lets map
+        if (x > 127) {
+            x = 255 - x;
+            y = 63 - y;
+        }
+        delegatee_->SetPixel(x, y, red, green, blue);
+    }
+
+    Transformer128x64::Transformer128x64()
+    : canvas_(new TransformCanvas()) {
+    }
+    
+    Transformer128x64::~Transformer128x64() {
+        delete canvas_;
+    }
+    
+    Canvas *Transformer128x64::Transform(Canvas *output) {
+        assert(output != NULL);
+        
+        canvas_->SetDelegatee(output);
+        return canvas_;
+    }
 
 } // namespace rgb_matrix

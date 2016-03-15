@@ -81,6 +81,19 @@ private:
 
   TransformCanvas *const canvas_;
 };
+    
+class Transformer128x64: public CanvasTransformer {
+public:
+  Transformer128x64();
+  virtual ~Transformer128x64();
+
+  virtual Canvas *Transform(Canvas *output);
+
+private:
+  class TransformCanvas;
+
+  TransformCanvas *const canvas_;
+};
 
 } // namespace rgb_matrix
 
