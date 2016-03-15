@@ -181,7 +181,7 @@ int main(int argc, char *argv[]) {
     case 'd': as_daemon = true; break;
     case 'b': brightness = atoi(optarg); break;
     case 'L':
-      chain = 4;
+      chain = 8;
       rows = 32;
       large_display = true;
       break;
@@ -248,8 +248,8 @@ int main(int argc, char *argv[]) {
   // just to the chain-of-four-32x32 => 64x64 transformer, but just use any
   // of the transformers in transformer.h or write your own.
   if (large_display) {
-    // Mapping the coordinates of a 32x128 display mapped to a square of 64x64
-    matrix->SetTransformer(new rgb_matrix::LargeSquare64x64Transformer());
+    // Mapping the coordinates of a 32x256 display mapped to a square of 64x128
+    matrix->SetTransformer(new rgb_matrix::Transformer64x128());
   }
 
   std::vector<Magick::Image> sequence_pics;

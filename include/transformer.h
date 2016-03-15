@@ -82,10 +82,10 @@ private:
   TransformCanvas *const canvas_;
 };
     
-class Transformer128x64: public CanvasTransformer {
+class Transformer64x128: public CanvasTransformer {
 public:
-  Transformer128x64();
-  virtual ~Transformer128x64();
+  Transformer64x128();
+  virtual Transformer64x128();
 
   virtual Canvas *Transform(Canvas *output);
 

@@ -228,7 +228,7 @@ Canvas *LargeSquare64x64Transformer::Transform(Canvas *output) {
 /***********************************/
 /* Transformer 128 x 64 Canvas */
 /***********************************/
-class Transformer128x64::TransformCanvas : public Canvas {
+class Transformer64x128::TransformCanvas : public Canvas {
     public:
         TransformCanvas() : delegatee_(NULL) {}
         
@@ -244,7 +244,7 @@ class Transformer128x64::TransformCanvas : public Canvas {
         Canvas *delegatee_;
     };
     
-    void Transformer128x64::TransformCanvas::SetDelegatee(Canvas* delegatee) {
+    void Transformer64x128::TransformCanvas::SetDelegatee(Canvas* delegatee) {
         // Our assumptions of the underlying geometry:
         assert(delegatee->height() == 32);
         assert(delegatee->width() == 256);
@@ -252,23 +252,23 @@ class Transformer128x64::TransformCanvas : public Canvas {
         delegatee_ = delegatee;
     }
     
-    void Transformer128x64::TransformCanvas::Clear() {
+    void Transformer64x128::TransformCanvas::Clear() {
         delegatee_->Clear();
     }
     
-    void Transformer128x64::TransformCanvas::Fill(uint8_t red, uint8_t green, uint8_t blue) {
+    void Transformer64x128::TransformCanvas::Fill(uint8_t red, uint8_t green, uint8_t blue) {
         delegatee_->Fill(red, green, blue);
     }
     
-    int Transformer128x64::TransformCanvas::width() const {
+    int Transformer64x128::TransformCanvas::width() const {
         return 128;
     }
     
-    int Transformer128x64::TransformCanvas::height() const {
+    int Transformer64x128::TransformCanvas::height() const {
         return 64;
     }
 
-    void Transformer128x64::TransformCanvas::SetPixel(int x, int y, uint8_t red, uint8_t green, uint8_t blue) {
+    void Transformer64x128::TransformCanvas::SetPixel(int x, int y, uint8_t red, uint8_t green, uint8_t blue) {
         if (x < 0 || x >= width() || y < 0 || y >= height()) return;
         // We have up to column 64 one direction, then folding around. Lets map
         if (x > 127) {
@@ -278,15 +278,15 @@ class Transformer128x64::TransformCanvas : public Canvas {
         delegatee_->SetPixel(x, y, red, green, blue);
     }
 
-    Transformer128x64::Transformer128x64()
+    Transformer64x128::Transformer64x128()
     : canvas_(new TransformCanvas()) {
     }
     
-    Transformer128x64::~Transformer128x64() {
+    Transformer64x128::~Transformer64x128() {
         delete canvas_;
     }
     
-    Canvas *Transformer128x64::Transform(Canvas *output) {
+    Canvas *Transformer64x128::Transform(Canvas *output) {
         assert(output != NULL);
         
         canvas_->SetDelegatee(output);
